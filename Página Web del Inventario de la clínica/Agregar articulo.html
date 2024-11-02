@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Artículo - Clínica</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background: #007BFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: inline-block;
+        }
+        nav ul li {
+            margin: 0 15px;
+            display: inline;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            background: #007BFF;
+            transition: background 0.3s;
+        }
+        nav ul li a:hover {
+            background: #0056b3;
+        }
+        main {
+            padding: 20px;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+        }
+    </style>
+    <script>
+        function agregarArticulo() {
+            const nombre = document.getElementById("articuloNombre").value;
+            const cantidad = document.getElementById("articuloCantidad").value;
+            const descripcion = document.getElementById("articuloDescripcion").value;
+            const ubicacion = document.getElementById("articuloUbicacion").value;
+            const caducidad = document.getElementById("articuloCaducidad").value;
+
+            const articulo = { nombre, cantidad, descripcion, ubicacion, caducidad };
+            let inventario = JSON.parse(localStorage.getItem("inventario")) || [];
+            inventario.unshift(articulo); // Agregar al inicio
+            localStorage.setItem("inventario", JSON.stringify(inventario));
+
+            // Limpiar el formulario
+            document.getElementById("articuloNombre").value = '';
+            document.getElementById("articuloCantidad").value = '';
+            document.getElementById("articuloDescripcion").value = '';
+            document.getElementById("articuloUbicacion").value = '';
+            document.getElementById("articuloCaducidad").value = '';
+
+            // Actualizar el cuadro de inventario
+            cargarInventario();
+        }
+
+        function cargarInventario() {
+            const inventario = JSON.parse(localStorage.getItem("inventario")) || [];
+            const tableBody = document.querySelector("tbody");
+            tableBody.innerHTML = '';
+
+            inventario.forEach((articulo, index) => {
+                const newRow = tableBody.insertRow();
+                newRow.insertCell(0).innerText = articulo.nombre;
+                newRow.insertCell(1).innerText = articulo.cantidad;
+                newRow.insertCell(2).innerText = articulo.descripcion;
+                newRow.insertCell(3).innerText = articulo.ubicacion;
+                newRow.insertCell(4).innerText = articulo.caducidad;
+                const actionsCell = newRow.insertCell(5);
+                actionsCell.innerHTML = `
+                    <button class="edit" onclick="openEditModal(${index})">Editar</button>
+                    <button class="delete" onclick="eliminarArticulo(${index})">Eliminar</button>
+                `;
+            });
+        }
+    </script>
+</head>
+<body>
+<header>
+    <h1>Agregar Artículo al Inventario</h1>
+    <nav>
+        <ul>
+            <li><a href="Página Principal.html">Volver al Menú</a></li>
+            <li><a href="inventario.html">Ver Inventario</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <form onsubmit="event.preventDefault(); agregarArticulo();">
+        <label for="articuloNombre">Nombre del Artículo:</label>
+        <input type="text" id="articuloNombre" required>
+        
+        <label for="articuloCantidad">Cantidad:</label>
+        <input type="number" id="articuloCantidad" required>
+        
+        <label for="articuloDescripcion">Descripción:</label>
+        <input type="text" id="articuloDescripcion" required>
+        
+        <label for="articuloUbicacion">Ubicación:</label>
+        <input type="text" id="articuloUbicacion" required>
+        
+        <label for="articuloCaducidad">Fecha de Caducidad:</label>
+        <input type="date" id="articuloCaducidad" required>
+        
+        <button type="submit">Agregar Artículo</button>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2024 Clínica Dra. Miriam Gonzales. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>
